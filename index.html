@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LED Control</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+
+    .button {
+      font-size: 20px;
+      padding: 10px 20px;
+      margin: 5px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .button:hover {
+      opacity: 0.8;
+    }
+
+    .on {
+      background-color: #4CAF50; /* Green */
+      color: white;
+    }
+
+    .off {
+      background-color: #f44336; /* Red */
+      color: white;
+    }
+
+    .status-bar {
+      margin-top: 20px;
+      padding: 10px;
+      border-radius: 5px;
+      background-color: #ddd;
+      color: black;
+    }
+
+    .active {
+      background-color: #66ff66; /* Light Green */
+    }
+  </style>
+</head>
+<body>
+
+<h1>LED Control</h1>
+
+<button id="onButton" class="button on" onclick="turnOn()">Turn On</button>
+<button id="offButton" class="button off" onclick="turnOff()">Turn Off</button>
+
+<div id="statusBar" class="status-bar">LED is OFF</div>
+
+<script>
+  function turnOn() {
+    const statusBar = document.getElementById('statusBar');
+    statusBar.textContent = 'LED is ON';
+    statusBar.classList.add('active');
+
+    updateButtonState(true);
+    sendStateToServer(1);
+  }
+
+  function turnOff() {
+    const statusBar = document.getElementById('statusBar');
+    statusBar.textContent = 'LED is OFF';
+    statusBar.classList.remove('active');
+
+    updateButtonState(false);
+    sendStateToServer(0);
+  }
+
+  function updateButtonState(isOn) {
+    const onButton = document.getElementById('onButton');
+    const offButton = document.getElementById('offButton');
+
+    if (isOn) {
+      onButton.classList.add('active');
+      offButton.classList.remove('active');
+    } else {
+      onButton.classList.remove('active');
+      offButton.classList.add('active');
+    }
+  }
+
+  function sendStateToServer(state) {
+    fetch('/toggle?state=' + state)
+      .then(response => response.text())
+      .then(data => console.log(data))
+      .catch(error => console.error('Error:', error));
+  }
+</script>
+
+</body>
+</html>
